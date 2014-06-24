@@ -131,10 +131,10 @@ function set_host {
 }
 
 function check_support {
-    if [ `id -u` == "0" ]; then
-        echo -e "Error: You should NOT run this script as root, it'll sudo commands as needed."
-        exit 1
-    fi
+    # if [ `id -u` == "0" ]; then
+    #     echo -e "Error: You should NOT run this script as root, it'll sudo commands as needed."
+    #     exit 1
+    # fi
 
     which apt-get > /dev/null
     if [ $? -ne 0 ]; then
