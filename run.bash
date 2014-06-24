@@ -8,7 +8,7 @@ set -u
 set -e
 
 host_ip=""
-host_name="tsuru-sample.com"
+host_name="cloud.audiometric.io"
 mongohost="127.0.0.1"
 mongoport="27017"
 dockerhost="127.0.0.1"
