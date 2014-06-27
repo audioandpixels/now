@@ -619,9 +619,9 @@ done
 echo "What would you like to install? (all/node)"
 read -e install
 
-if [ $install == "all" ]; then
+if [ "$install" == "all" ]; then
     install_all
-elif [ $install == "node" ]; then 
+elif [ "$install" == "node" ]; then 
     install_node
 else
     echo "Input must be all/node"
