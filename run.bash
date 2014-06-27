@@ -559,9 +559,10 @@ function install_all {
     tsuru app-list
 }
 
-function install_all {
-  install_docker
-  install_tsuru_node_agent
+function install_node {
+    check_support
+    install_docker
+    install_tsuru_node_agent
 }
 
 function install_tsuru_node_agent {
