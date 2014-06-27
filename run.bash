@@ -617,7 +617,7 @@ while [ "${1-}" != "" ]; do
 done
 
 echo "What would you like to install? (all/node)"
-read install
+read install </dev/tty
 
 if [ "$install" == "all" ]; then
     install_all
