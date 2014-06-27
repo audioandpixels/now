@@ -312,8 +312,8 @@ function config_tsuru_post {
 }
 
 function add_as_docker_node {
-    mongo tsurudb --eval "db.docker_scheduler.insert({_id: 'theonepool'})"
-    mongo tsurudb --eval "db.docker_scheduler.update({_id: 'theonepool'}, {\$addToSet: {nodes: 'http://$dockerhost:$dockerport'}})"
+    mongo tsurudb --eval "db.docker_scheduler.insert({_id: 'alpha'})"
+    mongo tsurudb --eval "db.docker_scheduler.update({_id: 'alpha'}, {\$addToSet: {nodes: 'http://$dockerhost:$dockerport'}})"
 }
 
 function add_initial_user {
@@ -559,6 +559,18 @@ function install_all {
     tsuru app-list
 }
 
+function install_all {
+  install_docker
+  install_tsuru_node_agent
+}
+
+function install_tsuru_node_agent {
+  sudo add-apt-repository -y ppa:tsuru/ppa
+  sudo apt-get update
+  sudo apt-get install tsuru-node-agent
+  start tsuru-node-agent docker-ssh-agent
+}
+
 while [ "${1-}" != "" ]; do
     case $1 in
         "--host-name")
@@ -604,4 +616,13 @@ while [ "${1-}" != "" ]; do
     shift
 done
 
-install_all
+echo "What would you like to install? (all/node)"
+read -e install
+
+if [ $install == "all" ]; then
+    install_all
+elif [ $install == "node" ]; then 
+    install_node
+else
+    echo "Input must be all/node"
+fi
