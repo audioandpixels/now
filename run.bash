@@ -561,15 +561,48 @@ function install_all {
 
 function install_node {
     check_support
+    install_node_deps
     install_docker
-    install_tsuru_node_agent
+
+    if [[ ${install_tsuru_node_agent-} == "1" ]]; then
+        install_tsuru_node_agent
+    else
+        install_go
+        install_tsuru_node_agent_src
+    fi
+}
+
+function install_node_deps {
+    echo "Updating apt-get and installing basic dependencies (this could take a while)..."
+    sudo apt-get update -qq
+    sudo apt-get install jq screen curl mercurial git bzr python-software-properties -qqy
+    sudo apt-add-repository ppa:tsuru/ppa -y >/dev/null 2>&1
+    sudo apt-get update -qq
 }
 
 function install_tsuru_node_agent {
-  sudo add-apt-repository -y ppa:tsuru/ppa
-  sudo apt-get update
-  sudo apt-get install tsuru-node-agent
-  start tsuru-node-agent docker-ssh-agent
+    sudo apt-get install tsuru-node-agent
+    start tsuru-node-agent docker-ssh-agent
+}
+
+function install_tsuru_node_agent_src {
+    echo "Installing tsuru-node-agent from source (this could take some minutes)..."
+    go get github.com/tools/godep
+    if [[ -e $GOPATH/src/github.com/tsuru/tsuru-node-agent ]]; then
+        pushd $GOPATH/src/github.com/tsuru/tsuru-node-agent
+        git reset --hard && git clean -dfx && git pull
+        godep restore
+        popd
+    else
+        mkdir -p $GOPATH/src/github.com/tsuru/tsuru-node-agent
+        pushd $GOPATH/src/github.com/tsuru/tsuru-node-agent
+        git clone https://github.com/tsuru/tsuru-node-agent .
+        godep restore
+        popd
+    fi
+    go get github.com/tsuru/tsuru-node-agent
+
+    start tsuru-node-agent docker-ssh-agent
 }
 
 while [ "${1-}" != "" ]; do
