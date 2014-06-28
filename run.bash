@@ -602,8 +602,7 @@ function install_tsuru_node_agent_src {
     fi
     go get github.com/tsuru/tsuru-node-agent
 
-    source ~/.bashrc
-    start tsuru-node-agent docker-ssh-agent
+    start $GOPATH/bin/tsuru-node-agent docker-ssh-agent
 }
 
 while [ "${1-}" != "" ]; do
