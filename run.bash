@@ -561,15 +561,15 @@ function install_all {
 
 function install_node {
     check_support
-    install_node_deps
+    # install_node_deps
     install_docker
 
-    if [[ ${install_tsuru_node_agent-} == "1" ]]; then
-        install_tsuru_node_agent
-    else
-        install_go
-        install_tsuru_node_agent_src
-    fi
+    # if [[ ${install_tsuru_node_agent-} == "1" ]]; then
+    #     install_tsuru_node_agent
+    # else
+    #     install_go
+    #     install_tsuru_node_agent_src
+    # fi
 }
 
 function install_node_deps {
