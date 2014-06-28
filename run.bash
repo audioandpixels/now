@@ -603,6 +603,9 @@ function install_tsuru_node_agent_src {
     go get github.com/tsuru/tsuru-node-agent
 
     start $GOPATH/bin/tsuru-node-agent docker-ssh-agent
+
+    # Add node to controller
+    # $GOPATH/bin/tsuru-node-agent node-add address=<address> ID=<server-id> -h <tsuru-api:port>
 }
 
 while [ "${1-}" != "" ]; do
