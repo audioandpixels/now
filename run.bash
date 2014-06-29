@@ -11,7 +11,7 @@ host_ip=""
 host_name="cloud.audiometric.io"
 mongohost="127.0.0.1"
 mongoport="27017"
-dockerhost="127.0.0.1"
+dockerhost="0.0.0.0"
 dockerport="4243"
 adminuser="admin@example.com"
 adminpassword="admin123"
@@ -165,8 +165,8 @@ function install_docker {
     fi
     local opts=$(bash -c 'source /etc/default/docker && echo $DOCKER_OPTS')
     if [[ ! $opts =~ "tcp://" ]]; then
-        echo "Changing /etc/default/docker to listen on tcp://127.0.0.1:4243..."
-        echo 'DOCKER_OPTS="$DOCKER_OPTS -H tcp://127.0.0.1:4243"' | sudo tee -a /etc/default/docker > /dev/null
+        echo "Changing /etc/default/docker to listen on tcp://0.0.0.0:4243..."
+        echo 'DOCKER_OPTS="$DOCKER_OPTS -H tcp://0.0.0.0:4243"' | sudo tee -a /etc/default/docker > /dev/null
     fi
     sudo stop docker 1>&2 2>/dev/null || true
     sudo start docker
