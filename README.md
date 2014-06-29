@@ -20,3 +20,8 @@ Running the command below should already create a working tsuru environment:
 ```
 curl -sL https://raw.githubusercontent.com/audioandpixels/now/master/run.bash | bash
 ```
+
+```
+tsuru-admin platform-add ruby --dockerfile https://raw.githubusercontent.com/tsuru/basebuilder/master/ruby20/Dockerfile
+tsuru-admin platform-add nodejs --dockerfile https://raw.githubusercontent.com/tsuru/basebuilder/master/nodejs/Dockerfile
+```
