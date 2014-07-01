@@ -186,6 +186,7 @@ function install_docker {
 }
 
 function start_docker_registry {
+    echo "Starting docker registry..."
     docker run -d -e SETTINGS_FLAVOR=local -p 5000:5000 registry
 }
 
@@ -567,15 +568,7 @@ function install_all {
 
 function install_node {
     check_support
-    # install_node_deps
     install_docker
-
-    # if [[ ${install_tsuru_node_agent-} == "1" ]]; then
-    #     install_tsuru_node_agent
-    # else
-    #     install_go
-    #     install_tsuru_node_agent_src
-    # fi
 }
 
 function install_node_deps {
