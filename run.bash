@@ -591,6 +591,7 @@ while [ "${1-}" != "" ]; do
             ;;
         "--tsuru-pkg")
             install_tsuru_pkg=1
+            echo "Install tsuru from package"
             ;;
         "-f" | "--force-install")
             shift
@@ -624,7 +625,6 @@ while [ "${1-}" != "" ]; do
     shift
 done
 
-echo install_tsuru_pkg
 echo "What would you like to install? (all/node)"
 read install </dev/tty
 
