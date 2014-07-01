@@ -624,7 +624,7 @@ while [ "${1-}" != "" ]; do
     shift
 done
 
-echo $1
+echo install_tsuru_pkg
 echo "What would you like to install? (all/node)"
 read install </dev/tty
 
