@@ -64,6 +64,7 @@ redis-queue:
   host: localhost
   port: 6379
 docker:
+  registry: cloud.audiometric.io:5000
   collection: docker_containers
   repository-namespace: tsuru
   router: hipache
@@ -182,6 +183,10 @@ function install_docker {
         echo -e "export DOCKER_HOST=$dockerhost:$dockerport" | tee -a ~/.bashrc > /dev/null
     fi
     export DOCKER_HOST=$dockerhost:$dockerport
+}
+
+function start_docker_registry {
+    docker run -d -e SETTINGS_FLAVOR=local -p 5000:5000 registry
 }
 
 function install_mongo {
@@ -513,6 +518,7 @@ function install_all {
     install_basic_deps
     set_host
     install_docker
+    start_docker_registry
     install_mongo
     install_hipache
     install_gandalf
