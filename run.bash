@@ -579,34 +579,6 @@ function install_node_deps {
     sudo apt-get update -qq
 }
 
-function install_tsuru_node_agent {
-    sudo apt-get install tsuru-node-agent
-    start tsuru-node-agent docker-ssh-agent
-}
-
-function install_tsuru_node_agent_src {
-    echo "Installing tsuru-node-agent from source (this could take some minutes)..."
-    go get github.com/tools/godep
-    if [[ -e $GOPATH/src/github.com/tsuru/tsuru-node-agent ]]; then
-        pushd $GOPATH/src/github.com/tsuru/tsuru-node-agent
-        git reset --hard && git clean -dfx && git pull
-        godep restore
-        popd
-    else
-        mkdir -p $GOPATH/src/github.com/tsuru/tsuru-node-agent
-        pushd $GOPATH/src/github.com/tsuru/tsuru-node-agent
-        git clone https://github.com/tsuru/tsuru-node-agent .
-        godep restore
-        popd
-    fi
-    go get github.com/tsuru/tsuru-node-agent
-
-    start $GOPATH/bin/tsuru-node-agent docker-ssh-agent
-
-    # Add node to controller
-    # $GOPATH/bin/tsuru-node-agent node-add address=<address> ID=<server-id> -h <tsuru-api:port>
-}
-
 while [ "${1-}" != "" ]; do
     case $1 in
         "--host-name")
