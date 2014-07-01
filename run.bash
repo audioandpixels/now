@@ -624,6 +624,7 @@ while [ "${1-}" != "" ]; do
     shift
 done
 
+echo "${1-}"
 echo "What would you like to install? (all/node)"
 read install </dev/tty
 
