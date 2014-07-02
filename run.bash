@@ -343,12 +343,12 @@ function install_dashboard {
     if [[ $has_plat == "" ]]; then
         tsuru-admin platform-add python --dockerfile https://raw.githubusercontent.com/tsuru/basebuilder/master/python/Dockerfile
     fi
-    local platform_ok=$(docker run --rm tsuru/python bash -c "circusd --daemon /etc/circus/circus.ini && sleep 2 && ps aux | grep circusd | grep -v grep")
+    local platform_ok=$(docker run --rm registry.audiometric.io:8080/tsuru/python bash -c "circusd --daemon /etc/circus/circus.ini && sleep 2 && ps aux | grep circusd | grep -v grep")
     if [[ $platform_ok == "" ]]; then
         # Circusd bugged version, rebuilding platform
         tsuru-admin platform-update python --dockerfile https://raw.githubusercontent.com/tsuru/basebuilder/master/python/Dockerfile
     fi
-    local platform_ok=$(docker run --rm tsuru/python bash -c "circusd --daemon /etc/circus/circus.ini && sleep 2 && ps aux | grep circusd | grep -v grep")
+    local platform_ok=$(docker run --rm registry.audiometric.io:8080/tsuru/python bash -c "circusd --daemon /etc/circus/circus.ini && sleep 2 && ps aux | grep circusd | grep -v grep")
     if [[ $platform_ok == "" ]]; then
         echo "Error trying to start circus inside python docker image. Please report this as a bug in https://github.com/tsuru/now/issues"
         echo "Additional information:"
@@ -390,13 +390,13 @@ function install_tsuru_release {
     if [[ -e $GOPATH/src/github.com/tsuru/tsuru ]]; then
         pushd $GOPATH/src/github.com/tsuru/tsuru
         rm -rf *
-        curl -L https://github.com/tsuru/tsuru/archive/0.5.0.tar.gz | tar -zx --strip-components=1
+        curl -L https://github.com/tsuru/tsuru/archive/0.5.1.tar.gz | tar -zx --strip-components=1
         godep restore
         popd
     else
         mkdir -p $GOPATH/src/github.com/tsuru/tsuru
         pushd $GOPATH/src/github.com/tsuru/tsuru
-        curl -L https://github.com/tsuru/tsuru/archive/0.5.0.tar.gz | tar -zx --strip-components=1
+        curl -L https://github.com/tsuru/tsuru/archive/0.5.1.tar.gz | tar -zx --strip-components=1
         godep restore
         popd
     fi
