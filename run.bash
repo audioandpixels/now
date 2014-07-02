@@ -390,13 +390,13 @@ function install_tsuru_release {
     if [[ -e $GOPATH/src/github.com/tsuru/tsuru ]]; then
         pushd $GOPATH/src/github.com/tsuru/tsuru
         rm -rf *
-        curl -L https://github.com/tsuru/tsuru/archive/0.5.1.tar.gz | tar -zx --strip-components=1
+        curl -L https://github.com/tsuru/tsuru/archive/0.5.0.tar.gz | tar -zx --strip-components=1
         godep restore
         popd
     else
         mkdir -p $GOPATH/src/github.com/tsuru/tsuru
         pushd $GOPATH/src/github.com/tsuru/tsuru
-        curl -L https://github.com/tsuru/tsuru/archive/0.5.1.tar.gz | tar -zx --strip-components=1
+        curl -L https://github.com/tsuru/tsuru/archive/0.5.0.tar.gz | tar -zx --strip-components=1
         godep restore
         popd
     fi

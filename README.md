@@ -18,7 +18,7 @@ These are some goals for this project:
 Running the command below should already create a working tsuru environment:
 
 ```
-bash <(curl -sL https://raw.githubusercontent.com/audioandpixels/now/master/run.bash) --tsuru-pkg
+bash <(curl -sL https://raw.githubusercontent.com/audioandpixels/now/master/run.bash)
 ```
 
 ```
