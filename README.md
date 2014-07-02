@@ -25,3 +25,10 @@ bash <(curl -sL https://raw.githubusercontent.com/audioandpixels/now/master/run.
 tsuru-admin platform-add ruby --dockerfile https://raw.githubusercontent.com/tsuru/basebuilder/master/ruby20/Dockerfile
 tsuru-admin platform-add nodejs --dockerfile https://raw.githubusercontent.com/tsuru/basebuilder/master/nodejs/Dockerfile
 ```
+
+
+Notes on external db server to serve deployed apps:
+TODO: Any advantage using tsuru services?
+```
+docker run --name tsuru-db01 -e LC_ALL=C.UTF-8 -d postgres
+```
