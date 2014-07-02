@@ -377,11 +377,9 @@ function install_tsuru_pkg {
 
     sudo stop tsuru-ssh-agent >/dev/null 2>&1 || true
     sudo stop tsuru-server-api >/dev/null 2>&1 || true
-    sudo stop tsuru-server-collector >/dev/null 2>&1 || true
 
     sudo start tsuru-ssh-agent
     sudo start tsuru-server-api
-    sudo start tsuru-server-collector
 }
 
 function install_tsuru_src {
