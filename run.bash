@@ -400,9 +400,18 @@ function install_tsuru_release {
         godep restore
         popd
     fi
-    go install $GOPATH/src/github.com/tsuru/tsuru/cmd/tsr
-    go install $GOPATH/src/github.com/tsuru/tsuru/cmd/tsuru-admin
-    go install $GOPATH/src/github.com/tsuru/tsuru/cmd/tsuru
+
+    pushd $GOPATH/src/github.com/tsuru/tsuru/cmd/tsr
+    go install
+    popd
+
+    pushd $GOPATH/src/github.com/tsuru/tsuru/cmd/tsuru-admin
+    go install
+    popd
+
+    pushd $GOPATH/src/github.com/tsuru/tsuru/cmd/tsuru
+    go install
+    popd 
 
     screen -X -S api quit || true
     screen -X -S ssh quit || true
