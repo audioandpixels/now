@@ -7,6 +7,9 @@
 set -u
 set -e
 
+install="all"
+docker_registry=""
+
 host_ip=""
 host_name="cloud.audiometric.io"
 mongohost="127.0.0.1"
@@ -64,7 +67,7 @@ redis-queue:
   host: localhost
   port: 6379
 docker:
-  registry: cloud.audiometric.io:5000
+  registry: registry.audiometric.io:8080
   collection: docker_containers
   repository-namespace: tsuru
   router: hipache
@@ -185,9 +188,9 @@ function install_docker {
     export DOCKER_HOST=$dockerhost:$dockerport
 }
 
-function start_docker_registry {
-    echo "Starting docker registry..."
-    docker run -d -e SETTINGS_FLAVOR=local -p 5000:5000 registry
+function install_docker_registry {
+    echo "Installing docker registry..."
+    sudo apt-get install docker-registry
 }
 
 function install_mongo {
@@ -402,12 +405,10 @@ function install_tsuru_src {
     go get github.com/tsuru/tsuru/cmd/tsuru
 
     screen -X -S api quit || true
-    screen -X -S collector quit || true
     screen -X -S ssh quit || true
 
     local config_file=/etc/tsuru/tsuru.conf
     screen -S api -d -m tsr api --config=$config_file
-    screen -S collector -d -m tsr collector --config=$config_file
     screen -S ssh -d -m tsr docker-ssh-agent -l 0.0.0.0:4545 -u ubuntu -k /var/lib/tsuru/.ssh/id_rsa
 }
 
@@ -517,7 +518,6 @@ function install_all {
     install_basic_deps
     set_host
     install_docker
-    start_docker_registry
     install_mongo
     install_hipache
     install_gandalf
@@ -569,12 +569,10 @@ function install_node {
     install_docker
 }
 
-function install_node_deps {
-    echo "Updating apt-get and installing basic dependencies (this could take a while)..."
-    sudo apt-get update -qq
-    sudo apt-get install jq screen curl mercurial git bzr python-software-properties -qqy
-    sudo apt-add-repository ppa:tsuru/ppa -y >/dev/null 2>&1
-    sudo apt-get update -qq
+function install_registry {
+    check_support
+    install_basic_deps
+    install_docker_registry
 }
 
 while [ "${1-}" != "" ]; do
@@ -589,7 +587,6 @@ while [ "${1-}" != "" ]; do
             ;;
         "--tsuru-pkg")
             install_tsuru_pkg=1
-            echo "Install tsuru from package"
             ;;
         "-f" | "--force-install")
             shift
@@ -619,17 +616,23 @@ while [ "${1-}" != "" ]; do
             shift
             aws_secret_key=$1
             ;;
+        "--node-only")
+            install="node"
+            ;;
+        "--docker-registry")
+            install="registry"
+            ;;
     esac
     shift
 done
 
-echo "What would you like to install? (all/node)"
-read install </dev/tty
-
 if [ "$install" == "all" ]; then
+    echo "Installing all..."
     install_all
 elif [ "$install" == "node" ]; then 
+    echo "Installing node only..."
     install_node
-else
-    echo "Input must be all/node"
+elif [ "$install" == "registry" ]; then 
+    echo "Installing docker registry..."
+    install_registry
 fi
