@@ -227,7 +227,6 @@ function install_hipache {
         exit 1
     fi
     echo "node hipache found running at $addr"
-
 }
 
 function install_gandalf {
@@ -385,6 +384,34 @@ function install_tsuru_pkg {
     sudo start tsuru-server-api
 }
 
+function install_tsuru_release {
+    echo "Installing Tsuru from release (this could take some minutes)..."
+    go get github.com/tools/godep
+    if [[ -e $GOPATH/src/github.com/tsuru/tsuru ]]; then
+        pushd $GOPATH/src/github.com/tsuru/tsuru
+        rm -rf *
+        curl -L https://github.com/tsuru/tsuru/archive/0.5.1.tar.gz | tar -zx --strip-components=1
+        godep restore
+        popd
+    else
+        mkdir -p $GOPATH/src/github.com/tsuru/tsuru
+        pushd $GOPATH/src/github.com/tsuru/tsuru
+        curl -L https://github.com/tsuru/tsuru/archive/0.5.1.tar.gz | tar -zx --strip-components=1
+        godep restore
+        popd
+    fi
+    go install $GOPATH/src/github.com/tsuru/tsuru/cmd/tsr
+    go install $GOPATH/src/github.com/tsuru/tsuru/cmd/tsuru-admin
+    go install $GOPATH/src/github.com/tsuru/tsuru/cmd/tsuru
+
+    screen -X -S api quit || true
+    screen -X -S ssh quit || true
+
+    local config_file=/etc/tsuru/tsuru.conf
+    screen -S api -d -m tsr api --config=$config_file
+    screen -S ssh -d -m tsr docker-ssh-agent -l 0.0.0.0:4545 -u ubuntu -k /var/lib/tsuru/.ssh/id_rsa
+}
+
 function install_tsuru_src {
     echo "Installing Tsuru from source (this could take some minutes)..."
     go get github.com/tools/godep
@@ -527,7 +554,7 @@ function install_all {
         install_tsuru_pkg
     else
         install_go
-        install_tsuru_src
+        install_tsuru_release
     fi
     if [[ ${install_archive_server} == "1" ]]; then
         install_go
