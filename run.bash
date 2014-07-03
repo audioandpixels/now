@@ -168,7 +168,7 @@ function install_docker {
         sudo apt-get install lxc-docker -qqy
     fi
     local opts=$(bash -c 'source /etc/default/docker && echo $DOCKER_OPTS')
-    if [[ ! $opts =~ "tcp://" ]]; then
+    if [[ ! $opts =~ ":4243" ]]; then
         echo "Changing /etc/default/docker to listen on tcp://0.0.0.0:4243..."
         echo 'DOCKER_OPTS="$DOCKER_OPTS -H tcp://0.0.0.0:4243"' | sudo tee -a /etc/default/docker > /dev/null
     fi
@@ -203,11 +203,11 @@ function install_mongo {
         sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
         echo "deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen" | sudo tee /etc/apt/sources.list.d/mongodb.list > /dev/null
         sudo apt-get update -qq
-        sudo apt-get install mongodb-10gen -qqy
-        echo "nojournal = true" | sudo tee -a /etc/mongodb.conf > /dev/null
+        sudo apt-get install mongodb-org -qqy
+        echo "nojournal = true" | sudo tee -a /etc/mongod.conf > /dev/null
     fi
-    sudo stop mongodb 1>&2 2>/dev/null || true
-    sudo start mongodb
+    sudo stop mongod 1>&2 2>/dev/null || true
+    sudo start mongod
     mongoport=$(running_port mongod)
     if [[ $mongoport == "" ]]; then
         echo "Error: Couldn't find mongod port, please check /var/log/mongodb/mongodb.log for more information"
@@ -326,7 +326,7 @@ function add_as_docker_node {
 
 function add_initial_user {
     echo "Adding initial admin user..."
-    mongo tsurudb --eval 'db.teams.insert({_id: "admin"})'
+    mongo tsurudb --eval 'db.teams.update({_id: "admin"}, {_id: "admin"}, {upsert: true})'
     mongo tsurudb --eval "db.teams.update({_id: 'admin'}, {\$addToSet: {users: '${adminuser}'}})"
     curl -s -XPOST -d"{\"email\":\"${adminuser}\",\"password\":\"${adminpassword}\"}" http://${host_ip}:8080/users
     local token=$(curl -s -XPOST -d"{\"password\":\"${adminpassword}\"}" http://${host_ip}:8080/users/${adminuser}/tokens | jq -r .token)
