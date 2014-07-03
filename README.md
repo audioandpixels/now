@@ -30,5 +30,5 @@ tsuru-admin platform-add nodejs --dockerfile https://raw.githubusercontent.com/t
 Notes on external db server to serve deployed apps:
 TODO: Any advantage using tsuru services?
 ```
-docker run --name tsuru-db01 -e LC_ALL=C.UTF-8 -d postgres
+docker run --name tsuru-db01 -p 5432:5432 -e LC_ALL=C.UTF-8 -d postgres
 ```
